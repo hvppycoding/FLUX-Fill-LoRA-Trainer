@@ -179,10 +179,10 @@ def prepare_mask_and_masked_image(image, mask):
 
 def load_text_encoders(class_one, class_two):
     text_encoder_one = class_one.from_pretrained(
-        args.pretrained_model_name_or_path, subfolder="text_encoder", revision=g_args.revision, variant=g_args.variant
+        g_args.pretrained_model_name_or_path, subfolder="text_encoder", revision=g_args.revision, variant=g_args.variant
     )
     text_encoder_two = class_two.from_pretrained(
-        args.pretrained_model_name_or_path, subfolder="text_encoder_2", revision=g_args.revision, variant=g_args.variant
+        g_args.pretrained_model_name_or_path, subfolder="text_encoder_2", revision=g_args.revision, variant=g_args.variant
     )
     return text_encoder_one, text_encoder_two
 
