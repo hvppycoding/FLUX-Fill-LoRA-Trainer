@@ -1,6 +1,10 @@
 # FLUX.1-Fill-dev LoRA Training
 
-⚠️ **This script requires a GPU with a lot of VRAM, ideally 80GB or more. Please ensure you have the necessary hardware before running the script.**
+## ⚠️Important Note
+
+This script requires a GPU with a lot of VRAM, ideally 80GB or more. Please ensure you have the necessary hardware before running the script. This script was successfully run on RunPod using an A100 GPU.
+
+-----
 
 This repository provides code for training LoRAs (Low-Rank Adaptations) for the [black-forest-labs/FLUX.1-Fill-dev](https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev) model. It is based on the repository [Sebastian-Zok/FLUX-Fill-LoRa-Training](https://github.com/Sebastian-Zok/FLUX-Fill-LoRa-Training) but has been modified to fit my use case.
 
