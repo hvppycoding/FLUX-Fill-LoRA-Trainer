@@ -124,7 +124,7 @@ This directory contains images of more general concepts related to the instances
 
 ![validation data dir](./doc/validation_data_dir.png)
 
-This directory contains images used to evaluate the performance of the trained model during the training process. These images are typically not used for training the model itself.
+This directory contains images used to evaluate the performance of the trained model during the training process. These images are not used for training the model itself.
 
 * **Evaluation**: These images are used to assess how well the model is learning to generate or manipulate images of the specific instances.
 
