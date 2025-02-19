@@ -16,7 +16,6 @@ dependencies = [
   "huggingface-hub==0.29.0",
   "idna==3.10",
   "importlib_metadata==8.6.1",
-  "numpy==2.2.3",
   "packaging==24.2",
   "pillow==11.1.0",
   "PyYAML==6.0.2",
