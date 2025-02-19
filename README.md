@@ -129,3 +129,15 @@ This directory contains images used to evaluate the performance of the trained m
 * **Evaluation**: These images are used to assess how well the model is learning to generate or manipulate images of the specific instances.
 
 * **Purpose**: By monitoring the model's performance on the validation set, you can adjust the training process and hyperparameters to achieve better results.
+
+## Tutorial result
+
+The following image shows the results of training the model on the `sks dog` instance using the `tutorial` data.  
+
+prompts: `A photo of a sks dog standing up and barking at a penguin.`
+
+![tutorial result](./doc/tutorial_result.png)
+
+The image is generated via ComfyUI.
+
+![ComfyUI workflow](./doc/comfyui_workflow.png)
