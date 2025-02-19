@@ -11,6 +11,7 @@ class TestDreamBoothDatasetWithMask(unittest.TestCase):
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.instance_data_root = os.path.join(self.current_dir, "train_data")
         self.class_data_root = os.path.join(self.current_dir, "class_data")
+        self.validation_data_root = os.path.join(self.current_dir, "validation_data")
         
     def remake_output_dir(self, output_dir_name):
         output_dir_path = os.path.join(self.current_dir, output_dir_name)
@@ -69,6 +70,22 @@ class TestDreamBoothDatasetWithMask(unittest.TestCase):
                             tensor_to_image(batch[key][i]).save(file_path)
                 else:
                     print(key, batch[key])
+                    
+    def test_dataset_validation_data(self):
+        output_dir_path = self.remake_output_dir("output_validation")
+        
+        dataset = DreamBoothDatasetWithMask(
+            instance_data_root=self.validation_data_root,
+            instance_prompt="A sks dog",
+            shuffle=False
+        )
+        for i in range(len(dataset)):
+            data = dataset[i]
+            instance = tensor_to_image(data["instance_image_tensors"])
+            mask = tensor_to_mask(data["instance_mask_tensors"])
+            instance.save(os.path.join(output_dir_path, f"{i}_instance.png"))
+            mask.save(os.path.join(output_dir_path, f"{i}_class.png"))
+        
                     
 if __name__ == '__main__':
     print(os.path.abspath(__file__))

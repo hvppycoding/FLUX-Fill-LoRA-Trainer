@@ -38,4 +38,4 @@ dependencies = [
 ]
 
 [project.scripts]
-hvppyfluxfill = "hvppyfluxfill.cli:main"
+hvppyfluxfill = "hvppyfluxfill.cli:run"
