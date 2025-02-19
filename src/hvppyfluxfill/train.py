@@ -81,8 +81,6 @@ check_min_version("0.32.0.dev0")
 
 logger = get_logger(__name__)
 
-g_args = None
-
 
 def save_model_card(
     repo_id: str,
@@ -177,12 +175,12 @@ def prepare_mask_and_masked_image(image, mask):
     
     return mask, masked_image
 
-def load_text_encoders(class_one, class_two):
+def load_text_encoders(class_one, class_two, args):
     text_encoder_one = class_one.from_pretrained(
-        g_args.pretrained_model_name_or_path, subfolder="text_encoder", revision=g_args.revision, variant=g_args.variant
+        args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision, variant=args.variant
     )
     text_encoder_two = class_two.from_pretrained(
-        g_args.pretrained_model_name_or_path, subfolder="text_encoder_2", revision=g_args.revision, variant=g_args.variant
+        args.pretrained_model_name_or_path, subfolder="text_encoder_2", revision=args.revision, variant=args.variant
     )
     return text_encoder_one, text_encoder_two
 
@@ -893,7 +891,6 @@ def encode_prompt(
 
 
 def main(args):
-    g_args = args
     if args.report_to == "wandb" and args.hub_token is not None:
         raise ValueError(
             "You cannot use both --report_to=wandb and --hub_token due to a security risk of exposing your token."
@@ -1027,7 +1024,11 @@ def main(args):
         args.pretrained_model_name_or_path, subfolder="scheduler"
     )
     noise_scheduler_copy = copy.deepcopy(noise_scheduler)
-    text_encoder_one, text_encoder_two = load_text_encoders(text_encoder_cls_one, text_encoder_cls_two)
+    text_encoder_one, text_encoder_two = load_text_encoders(
+        text_encoder_cls_one, 
+        text_encoder_cls_two,
+        args
+    )
     vae = AutoencoderKL.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="vae",
@@ -1734,7 +1735,11 @@ def main(args):
                 logger.info("***** Running validation *****")
                 # create pipeline
                 if not args.train_text_encoder:
-                    text_encoder_one, text_encoder_two = load_text_encoders(text_encoder_cls_one, text_encoder_cls_two)
+                    text_encoder_one, text_encoder_two = load_text_encoders(
+                        text_encoder_cls_one, 
+                        text_encoder_cls_two,
+                        args
+                    )
                     text_encoder_one.to(weight_dtype)
                     text_encoder_two.to(weight_dtype)
                 pipeline = FluxFillPipeline.from_pretrained(
