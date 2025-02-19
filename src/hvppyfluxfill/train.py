@@ -187,7 +187,7 @@ def log_validation(
     is_final_validation=False,
 ):
     logger.info(
-        f"Running validation... \n Generating {args.validation_repeats} images with prompt:"
+        f"Running validation... \n Generating {len(validation_dataset)}*{args.validation_repeats} images with prompt:"
         f" {args.validation_prompt}."
     )
     pipeline = pipeline.to(accelerator.device)
@@ -202,11 +202,10 @@ def log_validation(
         val_data = validation_dataset[val_idx]
         pipeline_args = {}
         prompt = val_data["instance_prompts"]
-        # instance_image_tensors in [-1, 1] -> normalize to [0, 1]
+        # Normalizes instance_image_tensors from the range [-1, 1] to [0, 1].
         pipeline_args["image"] = (val_data["instance_image_tensors"] + 1.0) / 2.0 
         pipeline_args["mask_image"] = val_data["instance_mask_tensors"]
         pipeline_args["prompt"] = prompt
-        
         
         autocast_ctx = torch.autocast(accelerator.device.type) if not is_final_validation else nullcontext()
         if not is_final_validation:
