@@ -182,7 +182,6 @@ def log_validation(
     pipeline,
     args,
     accelerator,
-    pipeline_args,
     epoch,
     torch_dtype,
     is_final_validation=False,
