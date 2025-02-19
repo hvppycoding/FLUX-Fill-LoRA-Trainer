@@ -36,12 +36,7 @@ from huggingface_hub import create_repo, upload_folder
 from huggingface_hub.utils import insecure_hashlib
 from peft import LoraConfig, set_peft_model_state_dict
 from peft.utils import get_peft_model_state_dict
-import PIL
-from PIL import Image, ImageDraw
-from PIL.ImageOps import exif_transpose
 from torch.utils.data import Dataset
-from torchvision import transforms
-from torchvision.transforms.functional import crop
 from tqdm.auto import tqdm
 from transformers import CLIPTokenizer, PretrainedConfig, T5TokenizerFast
 
@@ -52,7 +47,6 @@ from diffusers import (
     FluxFillPipeline,
     FluxTransformer2DModel,
 )
-from diffusers.utils import load_image
 from diffusers.optimization import get_scheduler
 from diffusers.training_utils import (
     _set_state_dict_into_text_encoder,
@@ -68,7 +62,6 @@ from diffusers.utils import (
 )
 from diffusers.utils.hub_utils import load_or_create_model_card, populate_model_card
 from diffusers.utils.torch_utils import is_compiled_module
-from typing import List, Optional, Union, Optional
 
 from hvppyfluxfill.dataset import DreamBoothDatasetWithMask
 
@@ -378,15 +371,6 @@ def parse_args(input_args=None):
         type=float, 
         default=1.0, 
         help="The weight of prior preservation loss."
-    )
-    parser.add_argument(
-        "--num_class_images",
-        type=int,
-        default=100,
-        help=(
-            "Minimal class images for prior preservation loss. If there are not enough images already present in"
-            " class_data_dir, additional images will be sampled with class_prompt."
-        ),
     )
     parser.add_argument(
         "--output_dir",
@@ -942,51 +926,51 @@ def main(args):
         set_seed(args.seed)
 
     # Generate class images if prior preservation is enabled.
-    if args.with_prior_preservation:
-        class_images_dir = Path(args.class_data_dir)
-        if not class_images_dir.exists():
-            class_images_dir.mkdir(parents=True)
-        cur_class_images = len(list(class_images_dir.iterdir()))
+    # if args.with_prior_preservation:
+    #     class_images_dir = Path(args.class_data_dir)
+    #     if not class_images_dir.exists():
+    #         class_images_dir.mkdir(parents=True)
+    #     cur_class_images = len(list(class_images_dir.iterdir()))
 
-        if cur_class_images < args.num_class_images:
-            has_supported_fp16_accelerator = torch.cuda.is_available() or torch.backends.mps.is_available()
-            torch_dtype = torch.float16 if has_supported_fp16_accelerator else torch.float32
-            if args.prior_generation_precision == "fp32":
-                torch_dtype = torch.float32
-            elif args.prior_generation_precision == "fp16":
-                torch_dtype = torch.float16
-            elif args.prior_generation_precision == "bf16":
-                torch_dtype = torch.bfloat16
-            pipeline = FluxFillPipeline.from_pretrained(
-                args.pretrained_model_name_or_path,
-                torch_dtype=torch_dtype,
-                revision=args.revision,
-                variant=args.variant,
-            )
-            pipeline.set_progress_bar_config(disable=True)
+    #     if cur_class_images < args.num_class_images:
+    #         has_supported_fp16_accelerator = torch.cuda.is_available() or torch.backends.mps.is_available()
+    #         torch_dtype = torch.float16 if has_supported_fp16_accelerator else torch.float32
+    #         if args.prior_generation_precision == "fp32":
+    #             torch_dtype = torch.float32
+    #         elif args.prior_generation_precision == "fp16":
+    #             torch_dtype = torch.float16
+    #         elif args.prior_generation_precision == "bf16":
+    #             torch_dtype = torch.bfloat16
+    #         pipeline = FluxFillPipeline.from_pretrained(
+    #             args.pretrained_model_name_or_path,
+    #             torch_dtype=torch_dtype,
+    #             revision=args.revision,
+    #             variant=args.variant,
+    #         )
+    #         pipeline.set_progress_bar_config(disable=True)
 
-            num_new_images = args.num_class_images - cur_class_images
-            logger.info(f"Number of class images to sample: {num_new_images}.")
+    #         num_new_images = args.num_class_images - cur_class_images
+    #         logger.info(f"Number of class images to sample: {num_new_images}.")
 
-            sample_dataset = PromptDataset(args.class_prompt, num_new_images)
-            sample_dataloader = torch.utils.data.DataLoader(sample_dataset, batch_size=args.sample_batch_size)
+    #         sample_dataset = PromptDataset(args.class_prompt, num_new_images)
+    #         sample_dataloader = torch.utils.data.DataLoader(sample_dataset, batch_size=args.sample_batch_size)
 
-            sample_dataloader = accelerator.prepare(sample_dataloader)
-            pipeline.to(accelerator.device)
+    #         sample_dataloader = accelerator.prepare(sample_dataloader)
+    #         pipeline.to(accelerator.device)
 
-            for example in tqdm(
-                sample_dataloader, desc="Generating class images", disable=not accelerator.is_local_main_process
-            ):
-                images = pipeline(example["prompt"]).images
+    #         for example in tqdm(
+    #             sample_dataloader, desc="Generating class images", disable=not accelerator.is_local_main_process
+    #         ):
+    #             images = pipeline(example["prompt"]).images
 
-                for i, image in enumerate(images):
-                    hash_image = insecure_hashlib.sha1(image.tobytes()).hexdigest()
-                    image_filename = class_images_dir / f"{example['index'][i] + cur_class_images}-{hash_image}.jpg"
-                    image.save(image_filename)
+    #             for i, image in enumerate(images):
+    #                 hash_image = insecure_hashlib.sha1(image.tobytes()).hexdigest()
+    #                 image_filename = class_images_dir / f"{example['index'][i] + cur_class_images}-{hash_image}.jpg"
+    #                 image.save(image_filename)
 
-            del pipeline
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+    #         del pipeline
+    #         if torch.cuda.is_available():
+    #             torch.cuda.empty_cache()
 
     # Handle the repository creation
     if accelerator.is_main_process:
@@ -1286,7 +1270,6 @@ def main(args):
         instance_prompt=args.instance_prompt,
         class_data_root=args.class_data_dir if args.with_prior_preservation else None,
         class_prompt=args.class_prompt,
-        class_num=args.num_class_images,
         size=args.resolution,
         repeats=args.repeats
     )
