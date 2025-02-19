@@ -44,7 +44,6 @@ class DreamBoothDatasetWithMask(Dataset):
         self.num_instance_images: int = len(self.instance_image_tensors)
         
         self.class_data_root: Optional[str] = class_data_root
-        self.class_num: Optional[int] = class_num
         self.class_prompt: Optional[str] = class_prompt
         self.class_image_tensors: List[torch.Tensor] = []
         self.class_mask_tensors: List[PIL.Image.Image] = []
@@ -199,8 +198,10 @@ class DreamBoothDatasetWithMask(Dataset):
         train_resize = transforms.Resize(self.size, interpolation=transforms.InterpolationMode.BILINEAR)
         train_crop = transforms.CenterCrop(self.size)
         train_tensor = transforms.ToTensor()
-        # The values of mean and std for transform.normalize are not the desired mean and std, but rather the values to subtract and divide by, i.e., the estimated mean and std.
-        # In your example you subtract 0.5 and then divide by 0.5 yielding an image with mean zero and values in range [-1, 1]
+        # The values of mean and std for transform.normalize are NOT the desired mean and std, 
+        # but rather the values to subtract and divide by, i.e., the estimated mean and std.
+        # In your example you subtract 0.5 and then divide by 0.5 yielding an image 
+        # with mean zero and values in range [-1, 1]
         train_normalize = transforms.Normalize([0.5], [0.5])
 
         

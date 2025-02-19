@@ -197,12 +197,16 @@ def log_validation(
     generator = torch.Generator(device=accelerator.device).manual_seed(args.seed) if args.seed else None
 
     images = []
+    prompts = []
     for val_idx in range(len(validation_dataset)):
         val_data = validation_dataset[val_idx]
         pipeline_args = {}
-        pipeline_args["image"] = val_data["instance_image_tensors"]
+        prompt = val_data["instance_prompts"]
+        # instance_image_tensors in [-1, 1] -> normalize to [0, 1]
+        pipeline_args["image"] = (val_data["instance_image_tensors"] + 1.0) / 2.0 
         pipeline_args["mask_image"] = val_data["instance_mask_tensors"]
-        pipeline_args["prompt"] = val_data["instance_prompts"]
+        pipeline_args["prompt"] = prompt
+        
         
         autocast_ctx = torch.autocast(accelerator.device.type) if not is_final_validation else nullcontext()
         if not is_final_validation:
@@ -219,6 +223,7 @@ def log_validation(
         with autocast_ctx:
             for _ in range(args.validation_repeats):
                 images.append(pipeline(**pipeline_args, generator=generator).images[0])
+                prompts.append(prompt)
         
         if not is_final_validation:
             del pipeline_args["prompt_embeds"]
@@ -233,7 +238,7 @@ def log_validation(
             tracker.log(
                 {
                     phase_name: [
-                        wandb.Image(image, caption=f"{i}: {args.validation_prompt}") for i, image in enumerate(images)
+                        wandb.Image(image, caption=f"{i}: {prompts[i]}") for i, image in enumerate(images)
                     ]
                 }
             )
