@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hvppyfluxfill"
+version = "0.1.0"
+description = "FLUX Fill LoRA trainer"
+authors = [{ name = "hvppycoding" }]
+dependencies = [
+  "certifi==2025.1.31",
+  "charset-normalizer==3.4.1",
+  "diffusers==0.32.2",
+  "filelock==3.17.0",
+  "fsspec==2025.2.0",
+  "huggingface-hub==0.29.0",
+  "idna==3.10",
+  "importlib_metadata==8.6.1",
+  "numpy==2.2.3",
+  "packaging==24.2",
+  "pillow==11.1.0",
+  "PyYAML==6.0.2",
+  "regex==2024.11.6",
+  "requests==2.32.3",
+  "safetensors==0.5.2",
+  "tqdm==4.67.1",
+  "typing_extensions==4.12.2",
+  "urllib3==2.3.0",
+  "zipp==3.21.0",
+  "accelerate>=0.31.0",
+  "torchvision",
+  "transformers>=4.41.2",
+  "ftfy",
+  "tensorboard",
+  "Jinja2",
+  "peft>=0.11.1",
+  "sentencepiece"
+]
+
+[project.scripts]
+hvppyfluxfill = "hvppyfluxfill.cli:main"
