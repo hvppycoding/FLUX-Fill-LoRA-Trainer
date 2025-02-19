@@ -201,7 +201,7 @@ def log_validation(
         val_data = validation_dataset[val_idx]
         pipeline_args = {}
         pipeline_args["image"] = val_data["instance_image_tensors"]
-        pipeline_args["mask_image"] = val_data["instance_mask_image_tensors"]
+        pipeline_args["mask_image"] = val_data["instance_mask_tensors"]
         pipeline_args["prompt"] = val_data["instance_prompts"]
         
         autocast_ctx = torch.autocast(accelerator.device.type) if not is_final_validation else nullcontext()
