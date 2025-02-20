@@ -120,7 +120,7 @@ This directory contains images of the specific objects or subjects you want to t
 
 * **Purpose**: The images in this directory are used to fine-tune the model to generate or manipulate images of these specific instances.
 
-## 2. `class_data_dir`
+## 2. `class_data_dir` (Optional)
 
 ![class data dir](./doc/class_data_dir.png)
 
@@ -132,7 +132,7 @@ This directory contains images of more general concepts related to the instances
 
 * **Purpose**: The images in this directory help the model understand the broader context of the instances and prevent it from overfitting to the specific details of the instance images.
 
-## 3. `validation_data_dir`
+## 3. `validation_data_dir` (Optional)
 
 ![validation data dir](./doc/validation_data_dir.png)
 
