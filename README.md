@@ -38,6 +38,8 @@ pip install wandb
 # Execute the code from within the `tutorial` directory.
 # The example commands are not optimized and are provided for illustrative purposes only.
 # Feel free to share any better configurations you may have!
+pip install prodigyopt
+
 accelerate launch ../hvppyfluxfill_main.py \
   --pretrained_model_name_or_path="black-forest-labs/FLUX.1-Fill-dev" \
   --instance_prompt="A sks dog" \
@@ -73,6 +75,8 @@ accelerate launch ../hvppyfluxfill_main.py \
 # Execute the code from within the `tutorial` directory.
 # The example commands are not optimized and are provided for illustrative purposes only.
 # Feel free to share any better configurations you may have!
+pip install bitsandbytes
+
 accelerate launch ../hvppyfluxfill_main.py \
   --pretrained_model_name_or_path="black-forest-labs/FLUX.1-Fill-dev" \
   --instance_prompt="A sks dog" \
