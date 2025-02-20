@@ -34,8 +34,10 @@ pip install wandb
 ```
 
 ```bash
-# Execute the code from within the `tutorial` directory.
 # prodigy
+# Execute the code from within the `tutorial` directory.
+# The example commands are not optimized and are provided for illustrative purposes only.
+# Feel free to share any better configurations you may have!
 accelerate launch ../hvppyfluxfill_main.py \
   --pretrained_model_name_or_path="black-forest-labs/FLUX.1-Fill-dev" \
   --instance_prompt="A sks dog" \
@@ -67,8 +69,10 @@ accelerate launch ../hvppyfluxfill_main.py \
 ```
 
 ```bash
-# Execute the code from within the `tutorial` directory.
 # AdamW 8bit
+# Execute the code from within the `tutorial` directory.
+# The example commands are not optimized and are provided for illustrative purposes only.
+# Feel free to share any better configurations you may have!
 accelerate launch ../hvppyfluxfill_main.py \
   --pretrained_model_name_or_path="black-forest-labs/FLUX.1-Fill-dev" \
   --instance_prompt="A sks dog" \
