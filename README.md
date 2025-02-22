@@ -11,8 +11,8 @@ This repository provides code for training LoRAs (Low-Rank Adaptations) for the 
 * **Customizable Data Directories**: You can specify separate directories for instance, class, and validation data.
 * **Data Organization**: Each data directory can contain the following files, which are grouped by `<name>`:
     * `<name>.png`: The image file to be used for training.
-    * `<name>_mask.png`: A mask image file where the area to be filled is painted white.
-    * `<name>.txt`: A text file containing the image caption.
+    * `<name>_mask.png`: A mask image file where the area to be filled is painted white. If a `*_mask.png` file is not provided, the entire image will be used as a full mask.
+    * `<name>.txt`: A text file containing the image caption. If an image caption `*.txt` file is not provided, the default instance(class, validation) prompt will be used
 
 ## Example
 
