@@ -150,6 +150,6 @@ prompts: `A photo of a sks dog standing up and barking at a penguin.`
 
 ![tutorial result](./doc/tutorial_result.png)
 
-The image is generated via ComfyUI.
+The image is generated via ComfyUI on my local machine using an NVIDIA 4080 Super graphics card.
 
 ![ComfyUI workflow](./doc/comfyui_workflow.png)
